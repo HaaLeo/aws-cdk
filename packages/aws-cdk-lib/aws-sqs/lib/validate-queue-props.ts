@@ -1,6 +1,7 @@
 import { Queue, QueueProps } from './index';
 import { Token } from '../../core';
 import { validateProps, ValidationRule } from '../../core/lib/helpers-internal';
+import { Construct } from 'constructs';
 
 function validateRange(value: number | undefined, minValue: number, maxValue: number): boolean {
   return value !== undefined && !Token.isUnresolved(value) && (value < minValue || value > maxValue);
@@ -33,6 +34,6 @@ const queueValidationRules: ValidationRule<QueueProps>[] = [
   },
 ];
 
-export function validateQueueProps(props: QueueProps) {
-  validateProps(Queue.name, props, queueValidationRules);
+export function validateQueueProps(scope: Construct, props: QueueProps) {
+  validateProps(scope, Queue.name, props, queueValidationRules);
 }

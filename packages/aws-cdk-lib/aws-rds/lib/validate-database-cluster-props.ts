@@ -1,6 +1,7 @@
 import { ClusterScailabilityType, DatabaseCluster, DatabaseClusterProps, DBClusterStorageType } from './cluster';
 import { PerformanceInsightRetention } from './props';
 import { validateProps, ValidationRule } from '../../core/lib/helpers-internal';
+import { Construct } from 'constructs';
 
 const standardDatabaseRules: ValidationRule<DatabaseClusterProps>[] = [
   {
@@ -43,11 +44,11 @@ const limitlessDatabaseRules: ValidationRule<DatabaseClusterProps>[] = [
   },
 ];
 
-export function validateDatabaseClusterProps(props: DatabaseClusterProps): void {
+export function validateDatabaseClusterProps(scope: Construct, props: DatabaseClusterProps): void {
   const isLimitlessCluster = props.clusterScailabilityType === ClusterScailabilityType.LIMITLESS;
   const applicableRules = isLimitlessCluster
     ? [...standardDatabaseRules, ...limitlessDatabaseRules]
     : standardDatabaseRules;
 
-  validateProps(DatabaseCluster.name, props, applicableRules);
+  validateProps(scope, DatabaseCluster.name, props, applicableRules);
 }

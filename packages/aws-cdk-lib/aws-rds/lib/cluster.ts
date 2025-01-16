@@ -830,7 +830,7 @@ abstract class DatabaseClusterNew extends DatabaseClusterBase {
       });
     }
 
-    validateDatabaseClusterProps(props);
+    validateDatabaseClusterProps(scope, props);
 
     const enablePerformanceInsights = props.enablePerformanceInsights
       || props.performanceInsightRetention !== undefined || props.performanceInsightEncryptionKey !== undefined;
