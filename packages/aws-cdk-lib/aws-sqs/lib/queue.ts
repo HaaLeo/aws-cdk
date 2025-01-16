@@ -1,7 +1,7 @@
 import { Construct } from 'constructs';
 import { IQueue, QueueAttributes, QueueBase, QueueEncryption } from './queue-base';
 import { CfnQueue } from './sqs.generated';
-import { validateProps } from './validate-props';
+import { validateQueueProps } from './validate-queue-props';
 import * as iam from '../../aws-iam';
 import * as kms from '../../aws-kms';
 import { Duration, RemovalPolicy, Stack, Token, ArnFormat, Annotations } from '../../core';
@@ -383,7 +383,7 @@ export class Queue extends QueueBase {
       physicalName: props.queueName,
     });
 
-    validateProps(props);
+    validateQueueProps(props);
 
     if (props.redriveAllowPolicy) {
       const { redrivePermission, sourceQueues } = props.redriveAllowPolicy;

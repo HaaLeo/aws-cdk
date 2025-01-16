@@ -62,6 +62,17 @@ test('with a dead letter queue', () => {
   expect(queue.deadLetterQueue).toEqual(dlqProps);
 });
 
+test('multiple prop validation errors are presented to the user (out-of-range retentionPeriod and deliveryDelay)', () => {
+  // GIVEN
+  const stack = new Stack();
+
+  // THEN
+  expect(() => new sqs.Queue(stack, 'MyQueue', {
+    retentionPeriod: Duration.seconds(30),
+    deliveryDelay: Duration.minutes(16),
+  })).toThrow('Queue initialization failed due to the following validation error(s):\n- delivery delay must be between 0 and 900 seconds, but 960 was provided\n- message retention period must be between 60 and 1,209,600 seconds, but 30 was provided');
+});
+
 test('message retention period must be between 1 minute to 14 days', () => {
   // GIVEN
   const stack = new Stack();
@@ -69,11 +80,11 @@ test('message retention period must be between 1 minute to 14 days', () => {
   // THEN
   expect(() => new sqs.Queue(stack, 'MyQueue', {
     retentionPeriod: Duration.seconds(30),
-  })).toThrow(/message retention period must be 60 seconds or more/);
+  })).toThrow('Queue initialization failed due to the following validation error(s):\n- message retention period must be between 60 and 1,209,600 seconds, but 30 was provided');
 
   expect(() => new sqs.Queue(stack, 'AnotherQueue', {
     retentionPeriod: Duration.days(15),
-  })).toThrow(/message retention period must be 1209600 seconds or less/);
+  })).toThrow('Queue initialization failed due to the following validation error(s):\n- message retention period must be between 60 and 1,209,600 seconds, but 1296000 was provided');
 });
 
 test('message retention period can be provided as a parameter', () => {
