@@ -38,6 +38,25 @@ export interface ResourceEnvironment {
   readonly region: string;
 }
 
+// /**
+//  *
+//  * @param _target
+//  * @param propertyKey
+//  * @param descriptor
+//  */
+// export function metadata(_target: any, propertyKey: string, descriptor: PropertyDescriptor): void {
+//   const originalMethod = descriptor.value;
+
+//   descriptor.value = function (...args: any[]) {
+//     if (this instanceof Resource) {
+//       this.node.addMetadata();
+//     }
+
+//     // Call the original method
+//     return originalMethod.apply(this, args);
+//   };
+// }
+
 /**
  * Interface for the Resource construct.
  */
