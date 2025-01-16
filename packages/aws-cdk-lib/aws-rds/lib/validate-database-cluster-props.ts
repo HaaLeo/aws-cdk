@@ -1,6 +1,6 @@
+import { ClusterScailabilityType, DatabaseCluster, DatabaseClusterProps, DBClusterStorageType } from './cluster';
 import { PerformanceInsightRetention } from './props';
 import { validateProps, ValidationRule } from '../../core/lib/helpers-internal';
-import { ClusterScailabilityType, DatabaseCluster, DatabaseClusterProps, DBClusterStorageType } from './cluster';
 
 const standardDatabaseRules: ValidationRule<DatabaseClusterProps>[] = [
   {
