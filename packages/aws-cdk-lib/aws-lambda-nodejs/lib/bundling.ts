@@ -4,7 +4,7 @@ import { IConstruct } from 'constructs';
 import { PackageInstallation } from './package-installation';
 import { LockFile, PackageManager } from './package-manager';
 import { BundlingOptions, OutputFormat, SourceMapMode } from './types';
-import { exec, extractDependencies, findUp, getTsconfigCompilerOptions, isSdkV2Runtime } from './util';
+import { exec, extractDependencies, findUp, isSdkV2Runtime } from './util';
 import { Architecture, AssetCode, Code, Runtime } from '../../aws-lambda';
 import * as cdk from '../../core';
 import { LAMBDA_NODEJS_SDK_V3_EXCLUDE_SMITHY_PACKAGES } from '../../cx-api';
@@ -222,8 +222,20 @@ export class Bundling implements cdk.BundlingOptions {
       if (!tsconfig) {
         throw new Error('Cannot find a `tsconfig.json` but `preCompilation` is set to `true`, please specify it via `tsconfig`');
       }
-      const compilerOptions = getTsconfigCompilerOptions(tsconfig);
-      tscCommand = `${options.tscRunner} "${relativeEntryPath}" ${compilerOptions}`;
+
+      // Build tsc command with custom tsconfig
+      const osCommand = new OsCommand(options.osPlatform);
+      const bundlingTsConfigPath = pathJoin(options.outputDir, 'bundling.tsconfig.json');
+      tscCommand = chain([
+        osCommand.writeJson(bundlingTsConfigPath, {
+          extends: tsconfig,
+          include: [
+            path.relative(path.resolve(options.outputDir), path.resolve(relativeEntryPath)),
+          ],
+        }),
+        `${options.tscRunner} "${relativeEntryPath}" --project "${bundlingTsConfigPath}"`,
+        osCommand.remove(bundlingTsConfigPath),
+      ]);
       relativeEntryPath = relativeEntryPath.replace(/\.ts(x?)$/, '.js$1');
     }
 

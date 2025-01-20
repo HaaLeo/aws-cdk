@@ -2,7 +2,7 @@ import * as child_process from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 import { bockfs } from '@aws-cdk/cdk-build-tools';
-import { callsites, exec, extractDependencies, findUp, findUpMultiple, getTsconfigCompilerOptions } from '../lib/util';
+import { callsites, exec, extractDependencies, findUp, findUpMultiple } from '../lib/util';
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -194,71 +194,5 @@ describe('extractDependencies', () => {
     });
 
     fs.unlinkSync(pkgPath);
-  });
-});
-
-describe('getTsconfigCompilerOptions', () => {
-  test('should extract compiler options and returns as string', () => {
-    const tsconfig = path.join(__dirname, 'testtsconfig.json');
-    const compilerOptions = getTsconfigCompilerOptions(tsconfig);
-    expect(compilerOptions).toEqual([
-      '--alwaysStrict',
-      '--declaration',
-      '--declarationMap false',
-      '--experimentalDecorators',
-      '--incremental false',
-      '--inlineSourceMap',
-      '--inlineSources',
-      '--lib es2020,dom',
-      '--module CommonJS',
-      '--newLine lf',
-      '--noEmitOnError',
-      '--noFallthroughCasesInSwitch',
-      '--noImplicitAny',
-      '--noImplicitReturns',
-      '--noImplicitThis',
-      '--noUnusedLocals',
-      '--noUnusedParameters',
-      '--outDir ./',
-      '--resolveJsonModule',
-      '--rootDir ./',
-      '--strict',
-      '--strictNullChecks',
-      '--strictPropertyInitialization',
-      '--stripInternal false',
-      '--target ES2020',
-    ].join(' '));
-  });
-
-  test('should extract compiler options with extended config overriding', () => {
-    const tsconfig = path.join(__dirname, 'testtsconfig-extended.json');
-    const compilerOptions = getTsconfigCompilerOptions(tsconfig);
-    expect(compilerOptions).toEqual([
-      '--alwaysStrict',
-      '--declaration',
-      '--declarationMap false',
-      '--experimentalDecorators',
-      '--incremental false',
-      '--inlineSourceMap',
-      '--inlineSources',
-      '--lib es2020,dom',
-      '--module CommonJS',
-      '--newLine lf',
-      '--noEmitOnError',
-      '--noFallthroughCasesInSwitch',
-      '--noImplicitAny',
-      '--noImplicitReturns',
-      '--noImplicitThis',
-      '--noUnusedLocals',
-      '--noUnusedParameters',
-      '--outDir ./',
-      '--resolveJsonModule',
-      '--rootDir ./',
-      '--strict',
-      '--strictNullChecks',
-      '--strictPropertyInitialization',
-      '--stripInternal false',
-      '--target ES2022',
-    ].join(' '));
   });
 });

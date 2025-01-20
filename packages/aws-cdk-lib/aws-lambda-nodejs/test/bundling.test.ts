@@ -828,8 +828,7 @@ test('esbuild bundling with pre compilations', () => {
     architecture: Architecture.X86_64,
   });
 
-  const compilerOptions = util.getTsconfigCompilerOptions(findParentTsConfigPath(__dirname));
-
+  const tsConfigPath = util.findUp('tsconfig.json', __dirname);
   // Correctly bundles with esbuild
   expect(Code.fromAsset).toHaveBeenCalledWith(path.dirname(packageLock), {
     assetHashType: AssetHashType.OUTPUT,
@@ -837,9 +836,11 @@ test('esbuild bundling with pre compilations', () => {
       command: [
         'bash', '-c',
         [
-          `tsc \"/asset-input/test/bundling.test.ts\" ${compilerOptions} &&`,
+          `echo '{"extends":"${tsConfigPath}","include":["../asset-input/test/bundling.test.ts"]}' > "/asset-output/bundling.tsconfig.json"`,
+          'tsc "/asset-input/test/bundling.test.ts" --project "/asset-output/bundling.tsconfig.json"',
+          'rm  "/asset-output/bundling.tsconfig.json"',
           `esbuild --bundle \"/asset-input/test/bundling.test.js\" --target=${STANDARD_TARGET} --platform=node --outfile=\"/asset-output/index.js\" --external:${STANDARD_EXTERNAL}`,
-        ].join(' '),
+        ].join(' && '),
       ],
     }),
   });
